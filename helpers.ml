@@ -27,16 +27,17 @@ module Helpers = struct
         | ((a::az'),(b::bz')) -> loop ((a,b)::zz) az' bz'
       in List.rev (loop [] az bz)
 
-  (* let zip_tail az bz = *)
-  (*   let rec loop zz az bz = match (az,bz) with *)
-  (*       ([],_) *)
-  (*     | (_,[]) -> zz *)
-  (*     | ((a::az'),(b::bz')) -> loop (zz @ [(a,b)]) az' bz' *)
-  (*   in loop [] az bz *)
-
     let maximum = function
       | [] -> None
-      | (n::ns) -> Some (List.fold_left (fun a b -> if a >= b then a else b) n ns)
+      | (n::ns) -> Some (List.fold_left max n ns)
+
+    let range a b =
+      let rec loop acc b =
+        if b <= a
+        then acc
+        else loop ((b-1) :: acc) (b-1)
+      in
+        loop [] b
 
   end
 
