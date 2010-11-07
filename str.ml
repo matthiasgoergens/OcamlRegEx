@@ -158,8 +158,11 @@ let rec rmatch auto = function
 let rename : automaton list -> automaton list = fun a -> a
 
 (* gives a bunch of new states not already in the list of automata supplied. *)
-let new_names : int -> automaton list -> state list = fun i az ->
-    List.maximum (List.concat (List.map (fun auto -> auto.start :: auto.fin :: (List.concat (List.map (fun (z0,_,z1) -> [z0,z1])))))) + 1
+let new_names : int -> automaton list -> state list = fun n az ->
+    let start = (Option.default 0 (List.maximum (List.concat (List.map (fun auto -> auto.start :: auto.fin :: (List.concat (List.map (fun (z0,_,z1) -> [z0,z1])))))) + 1) in
+    List.range start (start + n)
+
+
 
 let neighbours : 'a list -> ('a * 'a) list = function
   | [] -> []
