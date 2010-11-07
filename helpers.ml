@@ -34,6 +34,10 @@ module Helpers = struct
   (*     | ((a::az'),(b::bz')) -> loop (zz @ [(a,b)]) az' bz' *)
   (*   in loop [] az bz *)
 
+    let maximum = function
+      | [] -> None
+      | (n::ns) -> Some (List.fold_left (fun a b -> if a >= b then a else b) n ns)
+
   end
 
 end
