@@ -182,9 +182,9 @@ let rec compile : simple_syntax -> automaton =
         and tables = List.map (fun auto -> auto.table) automata
         in { start = start
            ; fin = fin
-           ; table = List.concat ( (List.map (fun start' -> (start, None, start')) starts)
-                                   :: (List.map (fun fin' -> (fin', None, fin)) fins)
-                                   :: tables ) }
+           ; table = List.concat ((List.map (fun start' -> (start, None, start')) starts)
+                                 :: (List.map (fun fin' -> (fin', None, fin)) fins)
+                                 :: tables)}
     | Catenate s ->
         let automata = rename (List.map compile s) in
         let tables = List.map (fun auto -> auto.table) automata in
