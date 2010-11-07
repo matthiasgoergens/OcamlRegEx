@@ -36,11 +36,7 @@ module Helpers = struct
 
     let maximum = function
       | [] -> None
-      | (n::ns) ->
-        List.fold_left (fun a b -> match a with
-                            None -> None
-                          | Some a' -> 
-                              if a > b then a else b) (Some n) ns
+      | (n::ns) -> Some (List.fold_left (fun a b -> if a >= b then a else b) n ns)
 
   end
 
