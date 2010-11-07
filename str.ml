@@ -13,6 +13,8 @@
 
 (* $Id: str.ml 10375 2010-05-05 14:36:41Z guesdon $ *)
 
+open Helpers
+
 (** String utilities *)
 
 let string_before s n = String.sub s 0 n
@@ -159,7 +161,11 @@ let rename : automaton list -> automaton list = fun a -> a
 let new_names : int -> automaton list -> state list = fun i az ->
     List.maximum (List.concat (List.map (fun auto -> auto.start :: auto.fin :: (List.concat (List.map (fun (z0,_,z1) -> [z0,z1])))))) + 1
 
-let neighbours : 'a list -> ('a * 'a) list = fun az -> []
+let neighbours : 'a list -> ('a * 'a) list = function
+  | [] -> []
+  | az -> Helpers.List.zip az (List.tl az)
+
+  (* fun az -> [] *)
 (* neighbours [1;2;3;4] = [(1,2); (2,3); (3,4)] *)
 (* neighbours [] = [] *)
 (*            [a] = [] *)
