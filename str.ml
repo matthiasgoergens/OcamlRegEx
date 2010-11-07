@@ -91,6 +91,87 @@ module Charset =
 
   end
 
+compile : re_syntax -> automaton
+run : funAuto -> string -> Bool
+
+let rec rmatch auto = function
+    | [] -> auto.accepting
+    | (hd:tl) ->  rmatch (auto.transition hd) tl
+
+(* *)
+rmatch auto string = (.accepting) . foldr (\auto' -> auto'.transition) auto string
+
+type state = int
+type graph = list
+
+(* pseudo code *)
+type zipGraph = {
+    accepting : Bool;
+    transition : char -> zipGraph
+}
+
+type state = (int)
+type automaton = {
+    start : state;
+    fin : state;
+    table : (state * char option * state) list;
+    (* table : state -> char -> state *)
+}
+
+(* renames the states in a bunch of automata, so that they do not conflict. *)
+let rename : automaton list -> automaton list = ;
+(* gives a bunch of new states not already in the list of automata supplied. *)
+let newNames : int -> automaton list -> state list =;
+
+let rec compile : simple_syntax -> automaton =
+    function
+    | Lit a ->
+        { start = 0
+        ; fin = 1
+        ; table = (0, a, 1)}
+    | Alternative s ->
+        let automata = rename (map compile s) in
+        let [start;fin] = new_names 2 automata in
+        let starts = List.map (fun auto -> auto.start) automata
+        and fins =  List.map (fun auto -> auto.fin) automata
+        and tables = List.map (fun auto -> auto.table) automata in
+        
+        { start = start; fin = fin
+        ; table = List.concat
+                ( List.map (fun start' -> [start, None, start']) starts
+                ::List.map (fun fin' -> [fin', None, fin]) fins
+                ::tables)}
+    | Cat s -> 
+        let automata = rename (map compile s)
+        and tables = List.map (fun auto -> auto.table) automata in
+        
+        { start = (List.hd automata).start
+        ; fin = (List.last automata).fin
+        ; table = List.concat
+                (map (fun a b -> (a.fin, None, b.start)) (neighbours automata)
+                :: tables)}
+    | Kleene s -> 
+        let auto = compile s in
+        { start = auto.start; fin = auto.fin
+        ; table = (auto.fin, None, auto.start)::table}
+
+        
+neighbours : 'a list -> ('a * 'a) list
+neighbours [1;2;3;4] = [(1,2); (2,3); (3,4)]
+neighbours [] = []
+           [a] = []
+zip a (tail a)
+            
+        
+        
+	
+type simple_syntax =
+    | Literal of char
+    | Alternative of simple_syntax list
+    | Cat of simple_syntax list
+    | Empty
+    | Kleene of simple_syntax
+
 (** Abstract syntax tree for regular expressions *)
 
 type re_syntax =
@@ -102,8 +183,8 @@ type re_syntax =
   | Star of re_syntax
   | Plus of re_syntax
   | Option of re_syntax
-  | Group of int * re_syntax
-  | Refgroup of int
+(*  | Group of int * re_syntax *)
+(*  | Refgroup of int *)
   | Bol
   | Eol
   | Wordboundary
