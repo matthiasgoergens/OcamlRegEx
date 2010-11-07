@@ -156,7 +156,8 @@ let rec rmatch auto = function
 let rename : automaton list -> automaton list = fun a -> a
 
 (* gives a bunch of new states not already in the list of automata supplied. *)
-let new_names : int -> automaton list -> state list = fun i az -> []
+let new_names : int -> automaton list -> state list = fun i az ->
+    List.maximum (List.concat (List.map (fun auto -> auto.start :: auto.fin :: (List.concat (List.map (fun (z0,_,z1) -> [z0,z1])))))) + 1
 
 let neighbours : 'a list -> ('a * 'a) list = fun az -> []
 (* neighbours [1;2;3;4] = [(1,2); (2,3); (3,4)] *)
